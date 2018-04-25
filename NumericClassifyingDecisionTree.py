@@ -29,6 +29,7 @@ class NumericClassifyingDecisionTree(object):
         :param outputs: real, numeric output vector with each row of data having a corresponding output.
         """
         self.features = data.shape[1]
+        self.classes = max(outputs)
         if self.decisionTree is None:
             self.decisionTree = DecisionTreeClassifier()
         self.decisionTree.fit(data, outputs)
