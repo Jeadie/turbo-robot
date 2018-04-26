@@ -4,12 +4,13 @@ class PythonDecisionFunctionStrategy(AbstractDecisionFunctionStrategy):
     def __init__(self, decisionTreeHandler, functionName, inputs = None, classes = None):
         super(PythonDecisionFunctionStrategy, self).__init__(decisionTreeHandler, functionName)
         self.tab_count = 0
+        self.inputs = inputs
+        self.classes = classes
         if inputs is None:
             self.function_variables = "x"
             self.input_label = lambda i: "x[{}]".format(i)
 
         else:
-            self.labels =inputs
             self.function_variables = ", ".join(inputs)
             self.input_label = lambda i: inputs[i]
 
@@ -44,4 +45,19 @@ class PythonDecisionFunctionStrategy(AbstractDecisionFunctionStrategy):
 
     def express_function_header(self):
         self.tab_count += 1
-        return "def {0}(self, {1}):\n".format(self.functionName, self.function_variables)
+        return "def {0}({1}):\n\t{2}\n".format(self.functionName, self.function_variables, self.get_function_docstring())
+
+    def get_function_docstring(self):
+        segments = ['"""']
+        if self.inputs is not None:
+            segments.append(
+                "\n\t".join([":param {0}:".format(_class) for _class in self.inputs])
+                )
+        else:
+            segments.append(":param x: a input array of appropriate dimension.")
+        if self.classes is not None:
+            segments.append(":return: a class label of possible outcome: {0}".format(", ".join(self.classes)))
+        else:
+            segments.append(":return: an index indicating the output class.")
+        segments.append('"""')
+        return "\n\t".join(segments)
