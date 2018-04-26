@@ -23,10 +23,14 @@ class AbstractDecisionFunctionStrategy(object):
     def express_function_header(self):
         return ""
 
+    def express_function_end(self):
+        return ""
+
     # Public Template Method. Can be called, but do not override
     def construct_function(self):
         self.functionStringBuilder.append(self.express_function_header())
         self.treeHandler.two_part_inorder_traversal(self.start_visit_wrapper, self.end_visit_wrapper)
+        self.functionStringBuilder.append(self.express_function_end())
         return "".join(self.functionStringBuilder)
 
     # Private template Methods. Do not override
